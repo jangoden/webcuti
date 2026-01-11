@@ -4,10 +4,20 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Employee\DashboardController;
 use App\Http\Controllers\Employee\LeaveRequestController;
 use App\Http\Controllers\Employee\ProfileController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-// Redirect root to login
+// Redirect root based on auth status and role
 Route::get('/', function () {
+    if (Auth::check()) {
+        $user = Auth::user();
+        if ($user->isAdmin()) {
+            return redirect('/admin');
+        } elseif ($user->isPegawai()) {
+            return redirect()->route('pegawai.dashboard');
+        }
+    }
+
     return redirect()->route('login');
 });
 

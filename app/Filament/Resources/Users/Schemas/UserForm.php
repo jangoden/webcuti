@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class UserForm
@@ -52,8 +52,8 @@ class UserForm
                             ->label('Password')
                             ->password()
                             ->revealable()
-                            ->required(fn(string $operation): bool => $operation === 'create')
-                            ->dehydrated(fn(?string $state): bool => filled($state))
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrated(fn (?string $state): bool => filled($state))
                             ->maxLength(255),
                     ])
                     ->columns(2),
