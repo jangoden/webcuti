@@ -18,6 +18,12 @@ class LeaveTypeResource extends Resource
 {
     protected static ?string $model = LeaveType::class;
 
+    protected static ?string $navigationLabel = 'Jenis Cuti';
+
+    protected static ?string $pluralModelLabel = 'Jenis Cuti';
+
+    protected static ?string $modelLabel = 'Jenis Cuti';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $recordTitleAttribute = 'name';

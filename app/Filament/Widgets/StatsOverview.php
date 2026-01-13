@@ -11,34 +11,35 @@ class StatsOverview extends StatsOverviewWidget
 {
     protected static ?int $sort = -2;
 
+    protected function getColumns(): int
+    {
+        return 6;
+    }
+
     protected function getStats(): array
     {
-        $totalPegawai = User::where('role', 'pegawai')->count();
-        $pendingRequests = LeaveRequest::where('status', 'pending')->count();
-        $approvedThisMonth = LeaveRequest::where('status', 'approved')
-            ->whereMonth('processed_at', now()->month)
-            ->whereYear('processed_at', now()->year)
-            ->count();
-        $rejectedThisMonth = LeaveRequest::where('status', 'rejected')
-            ->whereMonth('processed_at', now()->month)
-            ->whereYear('processed_at', now()->year)
-            ->count();
-
         return [
-            Stat::make('Total Pegawai', $totalPegawai)
-                ->description('Jumlah pegawai terdaftar')
+            Stat::make('Total Pegawai', User::where('role', 'pegawai')->count())
                 ->descriptionIcon('heroicon-m-users')
                 ->color('primary'),
-            Stat::make('Menunggu Persetujuan', $pendingRequests)
-                ->description('Pengajuan yang belum diproses')
-                ->descriptionIcon('heroicon-m-clock')
-                ->color('warning'),
-            Stat::make('Disetujui Bulan Ini', $approvedThisMonth)
-                ->description('Cuti yang disetujui')
+
+            Stat::make('Total Pengajuan', LeaveRequest::count())
+                ->descriptionIcon('heroicon-m-document-text')
+                ->color('info'),
+
+            Stat::make('Disetujui', LeaveRequest::where('status', 'approved')->count())
                 ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success'),
-            Stat::make('Ditolak Bulan Ini', $rejectedThisMonth)
-                ->description('Cuti yang ditolak')
+
+            Stat::make('Total Hari Cuti', LeaveRequest::where('status', 'approved')->sum('total_days'))
+                ->descriptionIcon('heroicon-m-calendar-days')
+                ->color('primary'),
+
+            Stat::make('Menunggu Persetujuan', LeaveRequest::where('status', 'pending')->count())
+                ->descriptionIcon('heroicon-m-clock')
+                ->color('warning'),
+
+            Stat::make('Ditolak', LeaveRequest::where('status', 'rejected')->count())
                 ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
         ];

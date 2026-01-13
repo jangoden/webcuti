@@ -72,11 +72,19 @@ class UsersTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->hidden(fn ($record) => $record->role === 'admin'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->action(function (\Illuminate\Database\Eloquent\Collection $records) {
+                            $records->each(function ($record) {
+                                if ($record->role !== 'admin') {
+                                    $record->delete();
+                                }
+                            });
+                        }),
                 ]),
             ]);
     }

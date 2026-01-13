@@ -79,8 +79,8 @@
                     </table>
                 </div>
 
-                <!-- Pagination -->
-                <div class="px-6 py-4 border-t">
+                <!-- Footer / Pagination -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
                     {{ $leaveRequests->links() }}
                 </div>
             @else
