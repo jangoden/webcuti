@@ -149,24 +149,3 @@ Setelah menjalankan `php artisan migrate --seed`, sistem akan membuatkan akun de
 2.  **Riwayat Cuti:** Melihat status pengajuan (Pending/Disetujui/Ditolak).
 3.  **Sisa Cuti:** Informasi kuota cuti yang tersisa.
 4.  **Profil:** Mengubah data diri dan password.
-
----
-
-## ❓ Troubleshooting (Masalah Umum)
-
-**Q: Tampilan berantakan / CSS tidak muncul?**
-A: Pastikan Anda sudah menjalankan `npm run dev` di terminal. Atau jika di production, jalankan `npm run build`.
-
-**Q: Error "Target class [hash] does not exist"?**
-A: Hapus folder `bootstrap/cache/config.php` jika ada, lalu jalankan `php artisan config:clear`.
-
-**Q: Error 403 Forbidden saat masuk Admin?**
-A: Pastikan Anda login menggunakan akun dengan email `admin@...`. Jika Anda login sebagai pegawai biasa, Anda tidak berhak mengakses halaman admin. Silakan logout dulu.
-
-**Q: Error 500 Server Error?**
-A: Cek file `storage/logs/laravel.log` untuk detail error. Biasanya masalah koneksi database atau permission folder.
-
----
-
-**Dibuat oleh:** Tim Pengembang Web Cuti
-**Tahun:** 2026

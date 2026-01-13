@@ -30,12 +30,31 @@ class LeaveRequestController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        // 1. Basic validation first
+        $request->validate([
+            'leave_type_id' => 'required|exists:leave_types,id',
+            'start_date' => 'required|date|after_or_equal:today',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'reason' => 'nullable|string|max:1000',
+        ]);
+
+        // 2. Check if selected Leave Type requires attachment
+        $leaveType = LeaveType::find($request->leave_type_id);
+        
+        $attachmentRules = 'nullable';
+        if ($leaveType && $leaveType->requires_attachment) {
+            $attachmentRules = 'required';
+        }
+
+        // 3. Validate attachment dynamically AND re-validate/gather other fields for mass assignment
         $validated = $request->validate([
             'leave_type_id' => 'required|exists:leave_types,id',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'reason' => 'nullable|string|max:1000',
-            'attachment' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+            'attachment' => "$attachmentRules|file|mimes:pdf,jpg,jpeg,png|max:2048",
+        ], [
+            'attachment.required' => "Untuk cuti jenis {$leaveType->name}, Anda WAJIB melampirkan dokumen pendukung (Surat Dokter, dll).",
         ]);
 
         $user = $request->user();

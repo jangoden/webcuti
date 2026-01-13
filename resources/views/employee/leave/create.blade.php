@@ -21,7 +21,8 @@
                 </div>
             </div>
 
-            <form method="POST" action="{{ route('pegawai.leave.store') }}" enctype="multipart/form-data" class="space-y-6">
+            <form method="POST" action="{{ route('pegawai.leave.store') }}" enctype="multipart/form-data" class="space-y-6"
+                  x-data="{ requiresAttachment: false }">
                 @csrf
 
                 <!-- Auto-filled Info -->
@@ -42,14 +43,24 @@
                 <div>
                     <label for="leave_type_id" class="block text-sm font-medium text-gray-700 mb-1">Jenis Cuti <span class="text-red-500">*</span></label>
                     <select name="leave_type_id" id="leave_type_id" required
+                            @change="requiresAttachment = $event.target.options[$event.target.selectedIndex].dataset.requiresAttachment === '1'"
                             class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('leave_type_id') border-red-500 @enderror">
-                        <option value="">-- Pilih Jenis Cuti --</option>
+                        <option value="" data-requires-attachment="0">-- Pilih Jenis Cuti --</option>
                         @foreach ($leaveTypes as $leaveType)
-                            <option value="{{ $leaveType->id }}" {{ old('leave_type_id') == $leaveType->id ? 'selected' : '' }}>
+                            <option value="{{ $leaveType->id }}" 
+                                    data-requires-attachment="{{ $leaveType->requires_attachment ? '1' : '0' }}"
+                                    {{ old('leave_type_id') == $leaveType->id ? 'selected' : '' }}>
                                 {{ $leaveType->name }}
                             </option>
                         @endforeach
                     </select>
+                    
+                    <!-- Info Message Dynamic -->
+                    <div x-show="requiresAttachment" x-transition class="mt-2 text-sm text-blue-600 bg-blue-50 p-2 rounded-md flex items-start gap-2">
+                         <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                         <span>Jenis cuti ini <strong>WAJIB</strong> melampirkan dokumen pendukung.</span>
+                    </div>
+
                     @error('leave_type_id')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -90,8 +101,12 @@
 
                 <!-- Attachment -->
                 <div>
-                    <label for="attachment" class="block text-sm font-medium text-gray-700 mb-1">File Pendukung</label>
+                    <label for="attachment" class="block text-sm font-medium text-gray-700 mb-1">
+                        File Pendukung 
+                        <span x-show="requiresAttachment" class="text-red-500 ml-1" style="display: none;">* (Wajib)</span>
+                    </label>
                     <input type="file" name="attachment" id="attachment" accept=".pdf,.jpg,.jpeg,.png"
+                           :required="requiresAttachment"
                            class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 @error('attachment') border-red-500 @enderror">
                     <p class="mt-1 text-sm text-gray-500">Format: PDF, JPG, PNG. Maksimal 2MB.</p>
                     @error('attachment')

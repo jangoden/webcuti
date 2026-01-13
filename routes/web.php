@@ -31,7 +31,7 @@ Route::middleware('guest')->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 // Employee Routes (Pegawai only)
-Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+Route::middleware(['auth', 'role:pegawai', 'no_cache'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profil', [ProfileController::class, 'index'])->name('profile');
     Route::get('/cuti/ajukan', [LeaveRequestController::class, 'create'])->name('leave.create');

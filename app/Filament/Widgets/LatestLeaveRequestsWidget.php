@@ -24,7 +24,7 @@ class LatestLeaveRequestsWidget extends BaseWidget
     {
         return $table
             ->query(
-                LeaveRequest::query()->latest()
+                LeaveRequest::query()->latest()->limit(2)
             )
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
