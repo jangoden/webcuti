@@ -15,6 +15,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'no_cache' => \App\Http\Middleware\NoCache::class,
         ]);
+
+        $middleware->redirectUsersTo(function () {
+            if (\Illuminate\Support\Facades\Auth::user()?->isAdmin()) {
+                return '/admin';
+            }
+
+            return route('pegawai.dashboard');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -244,9 +244,15 @@ class RekapCutiPage extends Page implements HasForms, HasTable
         return [
             Action::make('exportPdf')
                 ->label('Export PDF')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->color('success')
+                ->icon('heroicon-o-document-arrow-down')
+                ->color('danger')
                 ->action('exportToPdf'),
+
+            Action::make('exportExcel')
+                ->label('Export Excel')
+                ->icon('heroicon-o-table-cells')
+                ->color('success')
+                ->action('exportToExcel'),
         ];
     }
 
@@ -271,5 +277,19 @@ class RekapCutiPage extends Page implements HasForms, HasTable
         return response()->streamDownload(function () use ($pdf) {
             echo $pdf->output();
         }, 'rekap-cuti-' . now()->format('Y-m-d') . '.pdf');
+    }
+
+    public function exportToExcel()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\RekapCutiExport(
+                $this->periodType,
+                $this->startDate,
+                $this->endDate,
+                $this->selectedYear,
+                $this->selectedMonth
+            ),
+            'rekap-cuti-' . now()->format('Y-m-d') . '.xlsx'
+        );
     }
 }

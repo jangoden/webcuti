@@ -41,14 +41,10 @@ class AuthController extends Controller
 
             // Redirect based on role
             if ($user->isAdmin()) {
-                Auth::logout();
-
-                return back()->withErrors([
-                    'login' => 'Admin tidak dapat login melalui halaman ini.',
-                ])->withInput($request->only('login', 'remember'));
+                return redirect()->intended('/admin');
             }
 
-            return redirect()->intended(route('pegawai.dashboard'));
+            return redirect()->route('pegawai.dashboard');
         }
 
         return back()->withErrors([
